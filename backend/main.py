@@ -13,13 +13,21 @@ from database import Base, engine, get_db
 
 app = FastAPI(title="GIS Portal Backend")
 
+
+origins = [
+    "http://localhost:3000",
+    "https://coffee-locator-402tcp8gm-azeemk210s-projects.vercel.app", # Your Vercel URL
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=origins,  # This tells the backend to trust these specific URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 
 Base.metadata.create_all(bind=engine)
 
