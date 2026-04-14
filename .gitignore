@@ -1,0 +1,16 @@
+# Ignore environment variables
+.env
+backend/.env
+backend/.env.*
+
+# Ignore Python virtual environment
+.venv/
+__pycache__/
+
+# Ignore SQL backups (not needed on GitHub)
+*.sql
+
+# Ignore OS files
+.DS_Store
+
+passwords.txt
