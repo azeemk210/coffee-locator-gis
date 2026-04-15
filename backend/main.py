@@ -19,6 +19,7 @@ app = FastAPI(title="GIS Portal Backend")
 cors_regex_patterns = [
     r"https?://localhost(:\d+)?",
     r"https?://127\.0\.0\.1(:\d+)?",
+    r"https?://192\.168\.120\.65(:\d+)?",  # Server IP
     r"https://.*\.vercel\.app",  # All Vercel preview and production URLs
     r"https://coffee-locator-gis\.vercel\.app",
 ]
