@@ -1,14 +1,17 @@
 # =======================
 # ENVIRONMENT VARIABLES
 # =======================
+# Ignore ALL .env files from backend and frontend (contain secrets)
+backend/.env*
+frontend/.env*
+
+# Root .env files
 .env
-.env.local
 .env.*.local
-backend/.env
-backend/.env.*
-frontend/.env.local
-frontend/.env.*.local
-# .env.example is included to show required variables
+.env.production
+
+# NOTE: Never commit .env files containing credentials!
+# Copy .env.example or template files locally, then add secrets
 
 # =======================
 # PYTHON
