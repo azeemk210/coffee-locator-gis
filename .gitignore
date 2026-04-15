@@ -2,13 +2,13 @@
 # ENVIRONMENT VARIABLES
 # =======================
 .env
-.env.example
 .env.local
 .env.*.local
 backend/.env
 backend/.env.*
 frontend/.env.local
 frontend/.env.*.local
+# .env.example is included to show required variables
 
 # =======================
 # PYTHON
