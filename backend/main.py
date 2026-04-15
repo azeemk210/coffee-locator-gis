@@ -14,25 +14,29 @@ from database import Base, engine, get_db
 app = FastAPI(title="GIS Portal Backend")
 
 
+# Add your server's IP here
 origins = [
+    "http://192.168.120.65:3000",
     "http://localhost:3000",
-    "https://coffee-locator-402tcp8gm-azeemk210s-projects.vercel.app", # Your Vercel URL
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # This tells the backend to trust these specific URLs
+    allow_origins=origins, # This is the magic line
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],   # Allows GET, POST, etc.
+    allow_headers=["*"],   # Allows all headers
 )
-
 
 
 Base.metadata.create_all(bind=engine)
 
 app.include_router(auth.router)
 
+
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "Salzburg GIS API is running"}
 
 @app.get("/shops", tags=["shops"])
 def list_shops(
