@@ -10,19 +10,14 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - SECRET_KEY=${SECRET_KEY}
-      - ENVIRONMENT=${ENVIRONMENT:-development}
-      - PYTHONUNBUFFERED=1
-    volumes:
-      # Mount source code for development hot-reload
-      - ./backend:/app
-      # Exclude virtual environment
-      - /app/.venv
+      
+      - ENVIRONMENT=${ENVIRONMENT:-docker}
+      - PYTHONUNBUFFERABLE=1
     networks:
       - gis-network
-    
     depends_on:
-      - db
+      db:
+        condition: service_started
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   # Frontend service
@@ -40,19 +35,27 @@ services:
     networks:
       - gis-network
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
+
+  # Database service (PostgreSQL with PostGIS)
+  db:
+    image: postgis/postgis:17-3.4
+    container_name: gis-portal-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_DB=${POSTGRES_DB:-gis_portal}
     ports:
       - "5432:5432"
     volumes:
-      # Persist database data
       - postgres_data:/var/lib/postgresql/data
     networks:
       - gis-network
-    
-    # Uncomment to use local database instead of Supabase
-    # profiles:
-    #   - local-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   gis-network:
