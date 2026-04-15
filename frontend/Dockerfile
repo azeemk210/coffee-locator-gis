@@ -7,7 +7,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+# Use npm ci for reproducible builds (requires package-lock.json)
+RUN npm ci || npm install
 
 # Stage 2: Builder
 FROM node:18-alpine as builder
