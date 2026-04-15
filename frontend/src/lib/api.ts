@@ -1,8 +1,12 @@
 'use client'
 
 import axios from 'axios'
+import { config } from './config'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// Use configuration from config.ts (reads NEXT_PUBLIC_API_URL)
+const API_BASE = config.apiUrl
+
+console.log('[API] Using base URL:', API_BASE)
 
 const api = axios.create({
   baseURL: API_BASE,

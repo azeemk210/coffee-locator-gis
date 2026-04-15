@@ -10,25 +10,25 @@ import auth
 import models
 import schemas
 from database import Base, engine, get_db
+from config import CORS_ORIGINS, ENVIRONMENT
 
 app = FastAPI(title="GIS Portal Backend")
 
-
 origins = [
     "http://localhost:3000",
-    "https://coffee-locator-gis.vercel.app",  # Production frontend
-    "https://coffee-locator-gis-docker.onrender.com",  # Backend for health checks
-    # Support Vercel preview deployments (wildcard pattern)
-    "https://*.vercel.app",
+    "http://127.0.0.1:3000",
 ]
 
+# Apply CORS configuration from config.py
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # This tells the backend to trust these URLs
+    allow_origins=origins,  # Loaded from config based on environment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+print(f"[MAIN] Backend running in {ENVIRONMENT} mode with {len(CORS_ORIGINS)} CORS origins")
 
 
 
