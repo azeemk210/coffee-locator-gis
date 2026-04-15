@@ -1,39 +1,20 @@
-# Multi-stage build for Next.js frontend
+# Simplified Next.js Frontend Dockerfile for Development/Production
 
-# Stage 1: Dependencies
-FROM node:18-alpine as dependencies
+FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
 
-# Use npm ci for reproducible builds (requires package-lock.json)
+# Install all dependencies (including dev dependencies for build)
 RUN npm ci || npm install
 
-# Stage 2: Builder
-FROM node:18-alpine as builder
-
-WORKDIR /app
-
-COPY --from=dependencies /app/node_modules ./node_modules
+# Copy application code
 COPY . .
 
-# Build the Next.js application
+# Build the Next.js application with proper PostCSS/Tailwind processing
 RUN npm run build
-
-# Stage 3: Runtime
-FROM node:18-alpine as runtime
-
-WORKDIR /app
-
-# Install only production dependencies
-COPY package*.json ./
-RUN npm install --omit=dev
-
-# Copy built application from builder
-COPY --from=builder /app/.next ./.next
-# Note: public directory is optional in Next.js
-# COPY --from=builder /app/public ./public
 
 # Set environment variables
 ENV NODE_ENV=production \
@@ -46,5 +27,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
 
-# Start Next.js application
+# Start Next.js application with built production bundle
 CMD ["npm", "start"]
