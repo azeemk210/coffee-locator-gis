@@ -16,12 +16,15 @@ app = FastAPI(title="GIS Portal Backend")
 
 origins = [
     "http://localhost:3000",
-    "https://coffee-locator-402tcp8gm-azeemk210s-projects.vercel.app", # Your Vercel URL
+    "https://coffee-locator-gis.vercel.app",  # Production frontend
+    "https://coffee-locator-gis-docker.onrender.com",  # Backend for health checks
+    # Support Vercel preview deployments (wildcard pattern)
+    "https://*.vercel.app",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # This tells the backend to trust these specific URLs
+    allow_origins=origins,  # This tells the backend to trust these URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
