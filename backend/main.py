@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Annotated
 
 from fastapi import Depends, FastAPI
@@ -14,23 +15,27 @@ from config import CORS_ORIGINS, ENVIRONMENT
 
 app = FastAPI(title="GIS Portal Backend")
 
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+# Build CORS regex to match Vercel preview URLs and other patterns
+cors_regex_patterns = [
+    r"https?://localhost(:\d+)?",
+    r"https?://127\.0\.0\.1(:\d+)?",
+    r"https://.*\.vercel\.app",  # All Vercel preview and production URLs
+    r"https://coffee-locator-gis\.vercel\.app",
 ]
 
-# Apply CORS configuration from config.py
+cors_regex = "|".join(f"({p})" for p in cors_regex_patterns)
+
+# Apply CORS with both exact origins and regex patterns
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Loaded from config based on environment
+    allow_origin_regex=cors_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-print(f"[MAIN] Backend running in {ENVIRONMENT} mode with {len(CORS_ORIGINS)} CORS origins")
-
-
+print(f"[MAIN] Backend running in {ENVIRONMENT} mode")
+print(f"[MAIN] CORS configured with regex pattern for Vercel + localhost")
 
 Base.metadata.create_all(bind=engine)
 
