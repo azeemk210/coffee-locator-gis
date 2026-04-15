@@ -35,29 +35,13 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:8000}
-      - NODE_ENV=${NODE_ENV:-development}
-    volumes:
-      # Mount source code for development hot-reload
-      - ./frontend:/app
-      # Exclude node_modules to avoid conflicts
-      - /app/node_modules
-      - /app/.next
+      - NODE_ENV=${NODE_ENV:-production}
+    restart: unless-stopped
     networks:
       - gis-network
-    
     depends_on:
       backend:
         condition: service_healthy
-    command: npm run dev
-
-  # Optional: PostgreSQL database service (for local development)
-  db:
-    image: postgis/postgis:17-3.4
-    container_name: gis-portal-db
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
-      - POSTGRES_DB=${POSTGRES_DB:-gis_portal}
     ports:
       - "5432:5432"
     volumes:
