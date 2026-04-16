@@ -29,7 +29,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:8000}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - NODE_ENV=${NODE_ENV:-production}
     restart: unless-stopped
     networks:
