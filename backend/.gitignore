@@ -1,17 +1,25 @@
-node_modules
-.next
-out
-build
+# Virtual environment
+.venv
+venv
+env
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
 dist
+build
 
 # Environment files
 # Keep templates in git (.env.docker, .env.local, .env.server)
 # Ignore active/generated .env file
 .env
-.env.production.local
 .env.*.local
 
-*.log
-.DS_Store
-.idea
+# IDE
 .vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+*.log
