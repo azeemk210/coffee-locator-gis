@@ -103,12 +103,31 @@ export default function Map({ shops, onMapClick }: MapProps) {
       // Backend returns [lat, lng], but MapLibre needs [lng, lat]
       const [lat, lng] = shop.location.coordinates
 
-      const popup = new maplibregl.Popup({ offset: 25 }).setHTML(`
-        <div>
-          <h3 style="margin: 0 0 8px 0; font-weight: 600;">${shop.name}</h3>
-          <p style="margin: 0; font-size: 12px; color: #666;">
-            📍 ${lat.toFixed(4)}, ${lng.toFixed(4)}
-          </p>
+      const popup = new maplibregl.Popup({ 
+        offset: 25,
+        closeButton: true,
+        closeOnClick: false,
+      }).setHTML(`
+        <div style="padding: 8px; min-width: 200px; font-family: system-ui, -apple-system, sans-serif;">
+          <h3 style="margin: 0 0 10px 0; font-weight: 700; color: #1f2937; font-size: 14px;">🏪 ${shop.name}</h3>
+          
+          <div style="background-color: #f3f4f6; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
+            <p style="margin: 0 0 4px 0; font-size: 12px; color: #666;">
+              <strong>📍 Location:</strong>
+            </p>
+            <p style="margin: 0; font-size: 11px; color: #666; font-family: monospace;">
+              ${lat.toFixed(6)}, ${lng.toFixed(6)}
+            </p>
+          </div>
+          
+          <div style="border-top: 1px solid #e5e7eb; padding-top: 8px;">
+            <p style="margin: 0 0 4px 0; font-size: 11px; color: #999;">
+              <strong>Shop ID:</strong> #${shop.id}
+            </p>
+            <p style="margin: 0; font-size: 11px; color: #999;">
+              <strong>Owner ID:</strong> #${shop.creator_id}
+            </p>
+          </div>
         </div>
       `)
 
@@ -116,6 +135,23 @@ export default function Map({ shops, onMapClick }: MapProps) {
         .setLngLat([lng, lat]) // Convert to [lng, lat] for MapLibre
         .setPopup(popup)
         .addTo(map.current!)
+
+      // Show popup on mouseover
+      const markerElement = marker.getElement()
+      markerElement.addEventListener('mouseenter', () => {
+        marker.togglePopup()
+      })
+      
+      markerElement.addEventListener('mouseleave', () => {
+        // Keep popup open if user moves to it, close if they leave the marker area
+        const popup = marker.getPopup()
+        if (popup && popup.isOpen()) {
+          const popupElement = popup.getElement()
+          if (!popupElement.matches(':hover')) {
+            marker.togglePopup()
+          }
+        }
+      })
 
       markers.current.push(marker)
     })
