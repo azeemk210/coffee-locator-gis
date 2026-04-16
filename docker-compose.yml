@@ -1,5 +1,20 @@
 
 services:
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: gis-portal-nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - gis-network
+    depends_on:
+      - frontend
+      - backend
+
   # Backend service
   backend:
     build:
